@@ -176,19 +176,60 @@ const TracingCanvas = ({ strokes, onComplete, onTracingChange }) => {
     // Clear
     ctx.clearRect(0, 0, width, height);
 
+    // Helper to draw smooth Catmull-Rom spline
+    const drawSmoothStroke = (stroke, lineWidth, strokeStyle) => {
+      if (stroke.length < 2) return;
+      
+      ctx.beginPath();
+      ctx.lineWidth = lineWidth;
+      ctx.strokeStyle = strokeStyle;
+
+      if (stroke.length === 2) {
+        ctx.moveTo((stroke[0].x / 100) * width, (stroke[0].y / 100) * height);
+        ctx.lineTo((stroke[1].x / 100) * width, (stroke[1].y / 100) * height);
+      } else {
+        // Catmull-Rom Spline
+        const points = [stroke[0], ...stroke, stroke[stroke.length - 1]];
+        ctx.moveTo((stroke[0].x / 100) * width, (stroke[0].y / 100) * height);
+        
+        for (let i = 0; i < points.length - 3; i++) {
+          const p0 = points[i];
+          const p1 = points[i+1];
+          const p2 = points[i+2];
+          const p3 = points[i+3];
+          
+          // Interpolate steps
+          const steps = 15;
+          for (let s = 1; s <= steps; s++) {
+            const t = s / steps;
+            const t2 = t * t;
+            const t3 = t2 * t;
+            
+            const xVal = 0.5 * (
+              (2 * p1.x) +
+              (-p0.x + p2.x) * t +
+              (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
+              (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3
+            );
+            const yVal = 0.5 * (
+              (2 * p1.y) +
+              (-p0.y + p2.y) * t +
+              (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
+              (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3
+            );
+            
+            ctx.lineTo((xVal / 100) * width, (yVal / 100) * height);
+          }
+        }
+      }
+      ctx.stroke();
+    };
+
     // Draw smooth letter backdrop
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = '#f1f2f6';
-    ctx.lineWidth = 30;
     strokes.forEach(stroke => {
-      if (stroke.length < 2) return;
-      ctx.beginPath();
-      ctx.moveTo((stroke[0].x / 100) * width, (stroke[0].y / 100) * height);
-      for (let i = 1; i < stroke.length; i++) {
-        ctx.lineTo((stroke[i].x / 100) * width, (stroke[i].y / 100) * height);
-      }
-      ctx.stroke();
+      drawSmoothStroke(stroke, 30, '#f1f2f6');
     });
 
     // Draw dotted path (background)
@@ -293,8 +334,6 @@ const TracingCanvas = ({ strokes, onComplete, onTracingChange }) => {
       ctx.save();
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#fdcb6e';
-      ctx.lineWidth = 35;
       ctx.shadowBlur = 20;
       ctx.shadowColor = 'rgba(253, 203, 110, 0.5)';
       
@@ -305,13 +344,7 @@ const TracingCanvas = ({ strokes, onComplete, onTracingChange }) => {
       ctx.translate(-width / 2, -height / 2);
 
       strokes.forEach(stroke => {
-        if (stroke.length < 2) return;
-        ctx.beginPath();
-        ctx.moveTo((stroke[0].x / 100) * width, (stroke[0].y / 100) * height);
-        for (let i = 1; i < stroke.length; i++) {
-          ctx.lineTo((stroke[i].x / 100) * width, (stroke[i].y / 100) * height);
-        }
-        ctx.stroke();
+        drawSmoothStroke(stroke, 35, '#fdcb6e');
       });
       ctx.restore();
     }

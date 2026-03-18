@@ -143,13 +143,39 @@ export const LETTER_PATHS = {
 /**
  * Interpolates points between waypoints to create a denser dotted line
  */
+/**
+ * Interpolates points between waypoints to create a smooth dotted line
+ * Uses Catmull-Rom spline interpolation for strokes with 3+ points
+ */
 export const getDottedPath = (strokes, spacing = 5) => {
   const allDots = [];
   
+  const getCatmullRomPoint = (t, p0, p1, p2, p3) => {
+    const t2 = t * t;
+    const t3 = t2 * t;
+    return {
+      x: 0.5 * (
+        (2 * p1.x) +
+        (-p0.x + p2.x) * t +
+        (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
+        (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3
+      ),
+      y: 0.5 * (
+        (2 * p1.y) +
+        (-p0.y + p2.y) * t +
+        (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
+        (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3
+      )
+    };
+  };
+
   strokes.forEach((stroke, strokeIndex) => {
-    for (let i = 0; i < stroke.length - 1; i++) {
-      const p1 = stroke[i];
-      const p2 = stroke[i+1];
+    if (stroke.length < 2) return;
+
+    if (stroke.length === 2) {
+      // Linear interpolation for simple lines
+      const p1 = stroke[0];
+      const p2 = stroke[1];
       const dx = p2.x - p1.x;
       const dy = p2.y - p1.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -161,14 +187,49 @@ export const getDottedPath = (strokes, spacing = 5) => {
           x: p1.x + dx * t,
           y: p1.y + dy * t,
           strokeIndex,
-          id: `${strokeIndex}-${i}-${s}`
+          id: `${strokeIndex}-linear-${s}`
         });
       }
+    } else {
+      // Catmull-Rom spline for curves
+      // We repeat the first and last points to handle endpoints
+      const points = [stroke[0], ...stroke, stroke[stroke.length - 1]];
+      
+      for (let i = 0; i < points.length - 3; i++) {
+        const p0 = points[i];
+        const p1 = points[i+1];
+        const p2 = points[i+2];
+        const p3 = points[i+3];
+        
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const steps = Math.max(1, Math.floor(dist / (spacing / 1.5))); // More steps for curves
+        
+        for (let s = 0; s < steps; s++) {
+          const t = s / steps;
+          const pos = getCatmullRomPoint(t, p0, p1, p2, p3);
+          allDots.push({
+            x: pos.x,
+            y: pos.y,
+            strokeIndex,
+            id: `${strokeIndex}-spline-${i}-${s}`
+          });
+        }
+      }
+      // Add the final point of the stroke
+      const lastPoint = stroke[stroke.length - 1];
+      allDots.push({
+        x: lastPoint.x,
+        y: lastPoint.y,
+        strokeIndex,
+        id: `${strokeIndex}-spline-end`
+      });
     }
   });
   
   // Remove duplicate dots at segment ends
   return allDots.filter((dot, index, self) => 
-    index === self.findIndex((d) => d.x === dot.x && d.y === dot.y)
+    index === self.findIndex((d) => Math.abs(d.x - dot.x) < 0.1 && Math.abs(d.y - dot.y) < 0.1)
   );
 };
