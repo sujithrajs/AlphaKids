@@ -130,11 +130,16 @@ const TracingPage = () => {
               mood={isCelebrationOpen ? 'clapping' : (isTracing ? 'focused' : 'happy')} 
             />
           </div>
+          <div style={{ position: 'relative' }}>
           <TracingCanvas 
             strokes={strokes} 
             onComplete={handleComplete} 
             onTracingChange={setIsTracing}
+            letter={letter}
           />
+        </div>
+
+
         </div>
 
         <p style={{ marginTop: '20px', color: 'var(--text-muted)', fontSize: '1.2rem' }}>

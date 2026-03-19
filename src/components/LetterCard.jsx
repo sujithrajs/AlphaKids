@@ -18,67 +18,85 @@ const LetterCard = ({ letter, isCompleted, index }) => {
 
   return (
     <motion.div
-      whileHover={{ scale: 1.05, rotate: 2 }}
+      whileHover={{ scale: 1.05, y: -5 }}
       whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.03 }}
+      transition={{ 
+        delay: index * 0.03,
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }}
     >
-      <Link to={`/trace/${letter}`} style={{ display: 'block' }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '25px',
-          padding: '20px',
-          textAlign: 'center',
-          position: 'relative',
-          boxShadow: 'var(--shadow)',
-          border: `4px solid ${color}22`,
-          minHeight: '140px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+      <Link to={`/trace/${letter}`} style={{ display: 'block', textDecoration: 'none' }}>
+        <div 
+          className="glass"
+          style={{
+            borderRadius: 'var(--radius)',
+            padding: '24px',
+            textAlign: 'center',
+            position: 'relative',
+            border: `2px solid ${color}33`,
+            minHeight: '160px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'border-color 0.3s ease'
+          }}
+        >
           {isCompleted && (
-            <div style={{
-              position: 'absolute',
-              top: '-10px',
-              right: '-10px',
-              background: 'var(--secondary)',
-              width: '35px',
-              height: '35px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-              zIndex: 2
-            }}>
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              style={{
+                position: 'absolute',
+                top: '-12px',
+                right: '-12px',
+                background: 'var(--secondary)',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'var(--shadow-md)',
+                zIndex: 2,
+                border: '4px solid white'
+              }}
+            >
               <Star size={20} fill="white" color="white" />
-            </div>
+            </motion.div>
           )}
           
           <span style={{
-            fontSize: '3.5rem',
+            fontSize: '4.5rem',
             fontFamily: 'var(--font-display)',
             color: color,
-            lineHeight: 1
+            lineHeight: 1,
+            filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.05))',
+            textDecoration: 'none'
           }}>
             {letter}
           </span>
           
           <span style={{
-            fontSize: '1rem',
+            fontSize: '1.2rem',
             color: 'var(--text-muted)',
-            marginTop: '5px',
-            fontWeight: 'bold'
+            marginTop: '8px',
+            fontWeight: '800',
+            textTransform: 'lowercase',
+            letterSpacing: '0.05em'
           }}>
             {letter.toLowerCase()}
           </span>
         </div>
       </Link>
+
     </motion.div>
   );
+
 };
 
 export default LetterCard;

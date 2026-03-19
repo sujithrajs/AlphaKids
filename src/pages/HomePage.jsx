@@ -14,86 +14,103 @@ const HomePage = () => {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px',
-      background: 'radial-gradient(circle at center, #ffffff 0%, #f0f3f5 100%)',
+      padding: '40px 20px',
+      position: 'relative',
       overflow: 'hidden'
     }}>
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        style={{ textAlign: 'center', position: 'relative' }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}
       >
-        <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-          <Mascot size={250} />
-        </div>
+        <motion.div 
+          animate={{ 
+            y: [0, -15, 0],
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          style={{ marginBottom: '40px', display: 'flex', justifyContent: 'center' }}
+        >
+          <Mascot size={280} />
+        </motion.div>
 
         <motion.h1 
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
           style={{ 
-            fontSize: '4.5rem', 
+            fontSize: '5.5rem', 
             color: 'var(--primary)', 
-            marginBottom: '10px',
-            textShadow: '0 10px 20px rgba(108, 92, 231, 0.1)'
+            marginBottom: '15px',
+            textShadow: '0 10px 30px rgba(99, 102, 241, 0.2)',
+            lineHeight: 1
           }}
         >
           AlphaKids
         </motion.h1>
         
-        <p style={{ 
-          fontSize: '1.5rem', 
-          color: 'var(--text-muted)', 
-          marginBottom: '40px',
-          fontWeight: '600'
-        }}>
-          Let's learn to write together! ✨
-        </p>
+        <motion.p 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          style={{ 
+            fontSize: '1.6rem', 
+            color: 'var(--text-muted)', 
+            marginBottom: '50px',
+            fontWeight: '600',
+            maxWidth: '500px',
+            margin: '0 auto 50px'
+          }}
+        >
+          The most fun way to learn writing the alphabet! ✨
+        </motion.p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center' }}>
           <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/alphabet')}
             style={{
-              background: 'var(--primary)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
               color: 'white',
-              padding: '20px 40px',
-              borderRadius: '30px',
-              fontSize: '1.8rem',
-              fontWeight: 'bold',
+              padding: '24px 60px',
+              borderRadius: '40px',
+              fontSize: '2rem',
+              fontWeight: '900',
               display: 'flex',
               alignItems: 'center',
-              gap: '15px',
-              boxShadow: '0 15px 30px rgba(108, 92, 231, 0.3)',
-              cursor: 'pointer'
+              gap: '20px',
+              boxShadow: '0 20px 40px rgba(99, 102, 241, 0.4)',
+              border: 'none'
             }}
           >
-            <Play size={32} fill="white" /> Start Learning
+            <Play size={40} fill="white" /> Start Free
           </motion.button>
           
-          <div style={{ display: 'flex', gap: '30px', marginTop: '20px' }}>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            style={{ display: 'flex', gap: '40px', marginTop: '20px' }}
+          >
             <div style={{ textAlign: 'center' }}>
-              <div style={{ background: 'white', padding: '15px', borderRadius: '20px', boxShadow: 'var(--shadow)', marginBottom: '10px' }}>
-                <Star size={24} color="#fdcb6e" fill="#fdcb6e" />
+              <div className="glass" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '20px', marginBottom: '12px' }}>
+                <Star size={28} color="var(--secondary)" fill="var(--secondary)" />
               </div>
-              <span style={{ fontWeight: 'bold' }}>Collect Stars</span>
+              <span style={{ fontWeight: '800', fontSize: '0.9rem', color: 'var(--text-muted)' }}>REWARDS</span>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ background: 'white', padding: '15px', borderRadius: '20px', boxShadow: 'var(--shadow)', marginBottom: '10px' }}>
-                <BookOpen size={24} color="#00b894" />
+              <div className="glass" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '20px', marginBottom: '12px' }}>
+                <BookOpen size={28} color="var(--success)" />
               </div>
-              <span style={{ fontWeight: 'bold' }}>26 Letters</span>
+              <span style={{ fontWeight: '800', fontSize: '0.9rem', color: 'var(--text-muted)' }}>26 LEVELS</span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
-
-      {/* Background Decorative Circles */}
-      <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '300px', height: '300px', borderRadius: '50%', background: 'var(--primary-light)', opacity: 0.1, zIndex: -1 }}></div>
-      <div style={{ position: 'absolute', bottom: '-150px', right: '-150px', width: '400px', height: '400px', borderRadius: '50%', background: 'var(--secondary-light)', opacity: 0.2, zIndex: -1 }}></div>
     </div>
   );
+
 };
 
 export default HomePage;

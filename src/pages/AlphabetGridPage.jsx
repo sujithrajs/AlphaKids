@@ -15,80 +15,74 @@ const AlphabetGridPage = () => {
   return (
     <div className="alphabet-grid-page" style={{
       minHeight: '100vh',
-      padding: '40px 20px',
-      background: '#f1f2f6'
+      padding: '60px 20px',
     }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <header style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
-          marginBottom: '40px'
+          marginBottom: '60px',
+          flexWrap: 'wrap',
+          gap: '20px'
         }}>
-          <button 
+          <motion.button 
+            whileHover={{ x: -5 }}
             onClick={() => navigate('/')}
+            className="glass"
             style={{
-              background: 'white',
               padding: '12px 24px',
-              borderRadius: '15px',
+              borderRadius: 'var(--radius-sm)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: 'var(--shadow)',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              border: 'none',
+              color: 'var(--text)'
             }}
           >
             <ChevronLeft size={20} /> Back
-          </button>
+          </motion.button>
 
-          <div style={{ textAlign: 'center', flex: 1 }}>
-            <h1 style={{ fontSize: '2.5rem', color: 'var(--primary)', marginBottom: '10px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <h1 style={{ 
+              fontSize: '3rem', 
+              color: 'var(--primary)', 
+              marginBottom: '10px',
+              textShadow: '0 4px 12px rgba(99, 102, 241, 0.1)'
+            }}>
               Choose a Letter
             </h1>
-            
-            <div style={{ maxWidth: '400px', margin: '0 auto 15px auto' }}>
-              <div style={{ 
-                height: '12px', 
-                background: '#dfe6e9', 
-                borderRadius: '6px',
-                overflow: 'hidden',
-                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
-              }}>
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(completedCount / 26) * 100}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  style={{ 
-                    height: '100%', 
-                    background: 'linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%)',
-                    borderRadius: '6px'
-                  }}
-                />
-              </div>
-              <div style={{ 
-                marginTop: '8px', 
-                display: 'flex', 
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass"
+              style={{ 
+                display: 'inline-flex', 
                 alignItems: 'center', 
-                justifyContent: 'center', 
-                gap: '8px',
+                gap: '12px',
+                padding: '8px 24px',
+                borderRadius: '30px',
                 color: 'var(--text-muted)',
-                fontWeight: 'bold',
-                fontSize: '0.9rem'
-              }}>
-                <Trophy size={16} color="#fdcb6e" fill="#fdcb6e" />
-                <span>{completedCount} of 26 letters collected!</span>
-              </div>
-            </div>
+                fontWeight: '800',
+                fontSize: '0.9rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}
+            >
+              <Trophy size={18} color="var(--secondary)" fill="var(--secondary)" />
+              <span>{completedCount} / 26 Collected</span>
+            </motion.div>
           </div>
 
-          <div style={{ width: '100px' }} className="hide-mobile"></div> {/* Spacer */}
+          <div style={{ width: '100px' }} className="hide-mobile"></div>
         </header>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-          gap: '20px',
-          paddingBottom: '40px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+          gap: '24px',
+          paddingBottom: '80px'
         }}>
           {alphabets.map((char, index) => (
             <LetterCard 

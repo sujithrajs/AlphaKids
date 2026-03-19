@@ -9,8 +9,7 @@ const CelebrationModal = ({ isOpen, onNext, onRetry, letter }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div 
-          className="modal-overlay"
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -18,9 +17,10 @@ const CelebrationModal = ({ isOpen, onNext, onRetry, letter }) => {
             position: 'fixed',
             top: 0,
             left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
+            width: '100%',
+            height: '100%',
+            background: 'rgba(15, 23, 42, 0.4)',
+            backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -28,73 +28,144 @@ const CelebrationModal = ({ isOpen, onNext, onRetry, letter }) => {
             padding: '20px'
           }}
         >
-          <motion.div 
-            className="modal-content"
-            initial={{ scale: 0.5, y: 100 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.5, y: 100 }}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 50 }}
+            className="glass"
             style={{
-              background: 'white',
-              padding: '40px',
+              padding: '60px 40px',
               borderRadius: '40px',
               textAlign: 'center',
-              maxWidth: '400px',
+              maxWidth: '500px',
               width: '100%',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.2)'
+              position: 'relative',
+              overflow: 'hidden',
+              background: 'rgba(255, 255, 255, 0.95)',
+              border: '2px solid white',
+              boxShadow: '0 40px 100px rgba(0,0,0,0.2)'
             }}
           >
+            {/* Animated Background Orbs */}
+            <div style={{
+              position: 'absolute',
+              top: '-20%',
+              left: '-20%',
+              width: '150px',
+              height: '150px',
+              background: 'var(--primary)',
+              filter: 'blur(100px)',
+              opacity: 0.2,
+              zIndex: -1
+            }} />
+            <div style={{
+              position: 'absolute',
+              bottom: '-20%',
+              right: '-20%',
+              width: '150px',
+              height: '150px',
+              background: 'var(--secondary)',
+              filter: 'blur(100px)',
+              opacity: 0.2,
+              zIndex: -1
+            }} />
+
             <motion.div
-              animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              style={{ display: 'inline-block', marginBottom: '20px' }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              style={{ position: 'absolute', top: '20px', left: '20px', opacity: 0.1 }}
             >
-              <Star size={80} fill="#fdcb6e" color="#fdcb6e" />
+              <Star size={60} color="var(--secondary)" fill="var(--secondary)" />
             </motion.div>
-            
-            <h2 style={{ fontSize: '2.5rem', marginBottom: '10px', color: 'var(--primary)' }}>Great Job!</h2>
-            <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '30px' }}>
+
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', damping: 10, stiffness: 100, delay: 0.2 }}
+              style={{ marginBottom: '30px', display: 'flex', justifyContent: 'center' }}
+            >
+              <div style={{
+                width: '120px',
+                height: '120px',
+                background: 'var(--secondary)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 10px 20px rgba(251, 191, 36, 0.3)',
+                border: '6px solid white'
+              }}>
+                <Star size={60} fill="white" color="white" />
+              </div>
+            </motion.div>
+
+            <h2 style={{
+              fontSize: '3.5rem',
+              color: 'var(--primary)',
+              marginBottom: '10px',
+              lineHeight: 1
+            }}>
+              Awesome!
+            </h2>
+            <p style={{
+              fontSize: '1.4rem',
+              color: 'var(--text-muted)',
+              marginBottom: '40px',
+              fontWeight: '600'
+            }}>
               You traced the letter <strong>{letter}</strong> perfectly!
             </p>
 
-            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-              <button 
-                onClick={onRetry}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onNext}
                 style={{
-                  padding: '15px 25px',
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
+                  color: 'white',
+                  padding: '18px 40px',
                   borderRadius: '20px',
-                  background: 'var(--bg)',
+                  fontSize: '1.4rem',
+                  fontWeight: '900',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  fontSize: '1rem',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  boxShadow: '0 15px 30px rgba(99, 102, 241, 0.3)',
+                  border: 'none'
+                }}
+              >
+                Next Letter <ArrowRight size={24} />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onRetry}
+                style={{
+                  background: 'transparent',
+                  color: 'var(--text-muted)',
+                  padding: '12px',
+                  borderRadius: '15px',
+                  fontSize: '1.2rem',
                   fontWeight: 'bold',
-                  color: 'var(--text)'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  border: 'none'
                 }}
               >
                 <RefreshCw size={20} /> Try Again
-              </button>
-              <button 
-                onClick={onNext}
-                style={{
-                  padding: '15px 30px',
-                  borderRadius: '20px',
-                  background: 'var(--primary)',
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  fontSize: '1rem',
-                  fontWeight: 'bold'
-                }}
-              >
-                Next <ArrowRight size={20} />
-              </button>
+              </motion.button>
             </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   );
+
 };
 
 export default CelebrationModal;
