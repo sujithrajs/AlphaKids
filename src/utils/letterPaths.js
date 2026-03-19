@@ -1,5 +1,9 @@
 import { samplePath, PRO_GLYPHS } from './pathSampler';
 
+/**
+ * Each letter is defined as an array of strokes.
+ * Each stroke is an array of points {x, y} on a 100x100 grid.
+ */
 export const LETTER_PATHS = {
   A: [
     [{ x: 50, y: 15 }, { x: 40, y: 40 }, { x: 30, y: 65 }, { x: 22, y: 85 }],
@@ -15,9 +19,10 @@ export const LETTER_PATHS = {
     samplePath(PRO_GLYPHS.C, 40)
   ],
   D: [
-    [{ x: 30, y: 15 }, { x: 30, y: 85 }],
-    [{ x: 30, y: 15 }, { x: 50, y: 15 }, { x: 65, y: 20 }, { x: 78, y: 35 }, { x: 82, y: 50 }, { x: 78, y: 65 }, { x: 65, y: 80 }, { x: 50, y: 85 }, { x: 30, y: 85 }]
+    samplePath(PRO_GLYPHS.D_STEM, 20),
+    samplePath(PRO_GLYPHS.D_BELLY, 40)
   ],
+
   E: [
     [{ x: 30, y: 15 }, { x: 30, y: 85 }],
     [{ x: 30, y: 15 }, { x: 75, y: 15 }],
@@ -70,24 +75,21 @@ export const LETTER_PATHS = {
     samplePath(PRO_GLYPHS.O, 60)
   ],
   P: [
-    [{ x: 30, y: 15 }, { x: 30, y: 85 }],
-    [{ x: 30, y: 15 }, { x: 50, y: 15 }, { x: 65, y: 18 }, { x: 74, y: 26 }, { x: 74, y: 40 }, { x: 65, y: 48 }, { x: 50, y: 50 }, { x: 30, y: 50 }]
+    samplePath(PRO_GLYPHS.P_STEM, 20),
+    samplePath(PRO_GLYPHS.P_BOWL, 35)
   ],
   Q: [
     samplePath(PRO_GLYPHS.O, 60),
     [{ x: 62, y: 62 }, { x: 85, y: 85 }]
   ],
   R: [
-    [{ x: 30, y: 15 }, { x: 30, y: 85 }],
-    [{ x: 30, y: 15 }, { x: 50, y: 15 }, { x: 65, y: 18 }, { x: 74, y: 26 }, { x: 74, y: 40 }, { x: 65, y: 48 }, { x: 50, y: 50 }, { x: 30, y: 50 }],
-    [{ x: 52, y: 50 }, { x: 65, y: 65 }, { x: 82, y: 85 }]
+    samplePath(PRO_GLYPHS.R_STEM, 20),
+    samplePath(PRO_GLYPHS.R_BOWL, 35),
+    samplePath(PRO_GLYPHS.R_LEG, 20)
   ],
   S: [
     samplePath(PRO_GLYPHS.S, 50)
   ],
-
-
-
   T: [
     [{ x: 20, y: 15 }, { x: 80, y: 15 }],
     [{ x: 50, y: 15 }, { x: 50, y: 85 }]
@@ -95,7 +97,6 @@ export const LETTER_PATHS = {
   U: [
     [{ x: 25, y: 15 }, { x: 25, y: 65 }, { x: 25, y: 65 }, { x: 26.2, y: 72.7 }, { x: 29.8, y: 79.7 }, { x: 35.3, y: 85.2 }, { x: 42.3, y: 88.8 }, { x: 50, y: 90 }, { x: 57.7, y: 88.8 }, { x: 64.7, y: 85.2 }, { x: 70.2, y: 79.7 }, { x: 73.8, y: 72.7 }, { x: 75, y: 65 }, { x: 75, y: 65 }, { x: 75, y: 15 }]
   ],
-
   V: [
     [{ x: 18, y: 15 }, { x: 34, y: 50 }, { x: 50, y: 85 }],
     [{ x: 50, y: 85 }, { x: 66, y: 50 }, { x: 82, y: 15 }]
@@ -120,113 +121,49 @@ export const LETTER_PATHS = {
     [{ x: 78, y: 15 }, { x: 50, y: 50 }, { x: 22, y: 85 }],
     [{ x: 22, y: 85 }, { x: 78, y: 85 }]
   ]
-
-
 };
 
-/**
- * Interpolates points between waypoints to create a smooth dotted line
- * Uses Catmull-Rom spline interpolation for strokes with 3+ points
- */
-/**
- * Interpolates points between waypoints to create a smooth dotted line
- * USES ARC-LENGTH SAMPLING:
- * 1. Samples the spline at very high resolution to measure cumulative distance.
- * 2. Places dots at EXACT fixed intervals along the actual curve length.
- */
-const getCubicBezierPoint = (t, p0, p1, p2, p3) => {
-  const cx = 3 * (p1.x - p0.x);
-  const bx = 3 * (p2.x - p1.x) - cx;
-  const ax = p3.x - p0.x - cx - bx;
-  const cy = 3 * (p1.y - p0.y);
-  const by = 3 * (p2.y - p1.y) - cy;
-  const ay = p3.y - p0.y - cy - by;
-
-  const t2 = t * t;
-  const t3 = t2 * t;
-
-  return {
-    x: (ax * t3) + (bx * t2) + (cx * t) + p0.x,
-    y: (ay * t3) + (by * t2) + (cy * t) + p0.y
-  };
-};
-
-export const getDottedPath = (strokes, spacing = 5) => {
-
+export const getDottedPath = (strokes, spacing = 8) => {
   const allDots = [];
 
-  const getCatmullRomPoint = (t, p0, p1, p2, p3) => {
-    const t2 = t * t;
-    const t3 = t2 * t;
-    return {
-      x: 0.5 * ((2 * p1.x) + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3),
-      y: 0.5 * ((2 * p1.y) + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3)
-    };
-  };
-
   strokes.forEach((stroke, strokeIndex) => {
+    // If stroke is an object (legacy support or wrapper), try to get points array
+    const points = Array.isArray(stroke) ? stroke : (stroke.points || []);
+    if (points.length < 2) return;
+
+    // Build hi-res skeleton for even sampling
     const hiRes = [];
-
-    if (stroke.type === 'bezier') {
-      // Handle professional bezier-defined glyphs
-      const pts = stroke.points;
-      for (let i = 0; i < pts.length - 1; i++) {
-        const pStart = pts[i];
-        const pEnd = pts[i + 1];
-
-        if (pEnd.type === 'line') {
-          // Linear segment in a bezier path
-          for (let s = 0; s <= 100; s++) {
-            hiRes.push({ x: pStart.x + (pEnd.x - pStart.x) * (s / 100), y: pStart.y + (pEnd.y - pStart.y) * (s / 100) });
-          }
-        } else {
-          // Cubic Bezier segment
-          for (let s = 0; s < 100; s++) {
-            hiRes.push(getCubicBezierPoint(s / 100, pStart, pEnd.cp1, pEnd.cp2, pEnd));
-          }
-        }
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = points[i], p2 = points[i + 1];
+      const d = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+      const steps = Math.max(1, Math.floor(d * 5));
+      for (let s = 0; s < steps; s++) {
+        hiRes.push({ x: p1.x + (p2.x - p1.x) * (s / steps), y: p1.y + (p2.y - p1.y) * (s / steps) });
       }
-    } else {
-      // Handle legacy array-based strokes
-      if (stroke.length < 2) return;
-
-      const isClosed = stroke[0].x === stroke[stroke.length - 1].x && stroke[0].y === stroke[stroke.length - 1].y;
-      const points = isClosed
-        ? [stroke[stroke.length - 2], ...stroke, stroke[1]]
-        : [stroke[0], ...stroke, stroke[stroke.length - 1]];
-
-      for (let i = 0; i < points.length - 3; i++) {
-        for (let s = 0; s < 100; s++) {
-          hiRes.push(getCatmullRomPoint(s / 100, points[i], points[i + 1], points[i + 2], points[i + 3]));
-        }
-      }
-      hiRes.push(stroke[stroke.length - 1]);
     }
+    hiRes.push(points[points.length - 1]);
 
-    // Measure cumulative distance for PERFECT spacing
-    let accumulatedDist = 0;
-    let nextDotTarget = 0;
+    // Walk along the skeleton at EXACT fixed distance intervals
+    let curDist = 0;
+    let nextTarget = 0;
 
     for (let i = 0; i < hiRes.length - 1; i++) {
       const p1 = hiRes[i], p2 = hiRes[i + 1];
       const d = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
-      while (nextDotTarget <= accumulatedDist + d) {
-        const ratio = d === 0 ? 0 : (nextDotTarget - accumulatedDist) / d;
+      while (nextTarget <= curDist + d) {
+        const t = d === 0 ? 0 : (nextTarget - curDist) / d;
         allDots.push({
-          x: parseFloat((p1.x + (p2.x - p1.x) * ratio).toFixed(2)),
-          y: parseFloat((p1.y + (p2.y - p1.y) * ratio).toFixed(2)),
+          x: parseFloat((p1.x + (p2.x - p1.x) * t).toFixed(2)),
+          y: parseFloat((p1.y + (p2.y - p1.y) * t).toFixed(2)),
           strokeIndex,
-          id: `${strokeIndex}-dot-${allDots.length}`
+          id: `${strokeIndex}-n-${allDots.length}`
         });
-        nextDotTarget += spacing;
+        nextTarget += spacing;
       }
-      accumulatedDist += d;
+      curDist += d;
     }
   });
 
-
   return allDots;
 };
-
-
