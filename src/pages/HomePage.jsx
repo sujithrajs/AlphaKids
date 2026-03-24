@@ -1,8 +1,32 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Play, Star, BookOpen } from 'lucide-react';
 import Mascot from '../components/Mascot';
+
+const subjects = [
+  {
+    id: 'alphabet',
+    route: '/alphabet',
+    emoji: '🔤',
+    title: 'Alphabet',
+    desc: 'Trace A to Z and build super letter skills!',
+    gradient: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)',
+    shadow: 'rgba(99,102,241,0.45)',
+    badgeColor: '#818cf8',
+    badge: '26 Letters',
+  },
+  {
+    id: 'math',
+    route: '/math',
+    emoji: '🔢',
+    title: 'Math Fun',
+    desc: 'Add and subtract numbers with fun puzzles!',
+    gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+    shadow: 'rgba(16,185,129,0.45)',
+    badgeColor: '#34d399',
+    badge: '+ & - Games',
+  },
+];
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,101 +40,96 @@ const HomePage = () => {
       justifyContent: 'center',
       padding: '40px 20px',
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}>
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        style={{ textAlign: 'center', position: 'relative', zIndex: 1, width: '100%', maxWidth: '700px' }}
       >
-        <motion.div 
-          animate={{ 
-            y: [0, -15, 0],
-          }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          style={{ marginBottom: '40px', display: 'flex', justifyContent: 'center' }}
+        {/* Mascot */}
+        <motion.div
+          animate={{ y: [0, -14, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ marginBottom: '28px', display: 'flex', justifyContent: 'center' }}
         >
-          <Mascot size={280} />
+          <Mascot size={220} />
         </motion.div>
 
-        <motion.h1 
+        {/* App name */}
+        <motion.h1
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          style={{ 
-            fontSize: '5.5rem', 
-            color: 'var(--primary)', 
-            marginBottom: '15px',
-            textShadow: '0 10px 30px rgba(99, 102, 241, 0.2)',
-            lineHeight: 1
+          transition={{ delay: 0.25 }}
+          style={{
+            fontSize: '5rem',
+            color: 'var(--primary)',
+            marginBottom: '10px',
+            textShadow: '0 10px 30px rgba(99,102,241,0.2)',
+            lineHeight: 1,
           }}
         >
-          AlphaKids
+          KiddoLearn
         </motion.h1>
-        
-        <motion.p 
+
+        <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          style={{ 
-            fontSize: '1.6rem', 
-            color: 'var(--text-muted)', 
+          transition={{ delay: 0.35 }}
+          style={{
+            fontSize: '1.35rem',
+            color: 'var(--text-muted)',
+            fontWeight: '700',
             marginBottom: '50px',
-            fontWeight: '600',
-            maxWidth: '500px',
-            margin: '0 auto 50px'
           }}
         >
-          The most fun way to learn writing the alphabet! ✨
+          Choose a subject and start learning! ✨
         </motion.p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center' }}>
-          <motion.button
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/alphabet')}
-            style={{
-              background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
-              color: 'white',
-              padding: '24px 60px',
-              borderRadius: '40px',
-              fontSize: '2rem',
-              fontWeight: '900',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px',
-              boxShadow: '0 20px 40px rgba(99, 102, 241, 0.4)',
-              border: 'none'
-            }}
-          >
-            <Play size={40} fill="white" /> Start Free
-          </motion.button>
-          
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            style={{ display: 'flex', gap: '40px', marginTop: '20px' }}
-          >
-            <div style={{ textAlign: 'center' }}>
-              <div className="glass" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '20px', marginBottom: '12px' }}>
-                <Star size={28} color="var(--secondary)" fill="var(--secondary)" />
+        {/* Subject Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '28px', textAlign: 'left' }}>
+          {subjects.map((subj, i) => (
+            <motion.div
+              key={subj.id}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 + i * 0.15 }}
+              whileHover={{ scale: 1.05, y: -8 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate(subj.route)}
+              style={{
+                background: subj.gradient,
+                borderRadius: '28px',
+                padding: '40px 32px 36px',
+                cursor: 'pointer',
+                boxShadow: `0 20px 50px ${subj.shadow}`,
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Badge */}
+              <div style={{
+                position: 'absolute', top: '20px', right: '20px',
+                background: 'rgba(255,255,255,0.25)',
+                borderRadius: '40px', padding: '5px 14px',
+                color: 'white', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.05em'
+              }}>
+                {subj.badge}
               </div>
-              <span style={{ fontWeight: '800', fontSize: '0.9rem', color: 'var(--text-muted)' }}>REWARDS</span>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div className="glass" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '20px', marginBottom: '12px' }}>
-                <BookOpen size={28} color="var(--success)" />
-              </div>
-              <span style={{ fontWeight: '800', fontSize: '0.9rem', color: 'var(--text-muted)' }}>26 LEVELS</span>
-            </div>
-          </motion.div>
+
+              <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>{subj.emoji}</div>
+              <h2 style={{ fontSize: '2.4rem', color: 'white', margin: '0 0 10px' }}>{subj.title}</h2>
+              <p style={{ color: 'rgba(255,255,255,0.88)', fontWeight: '600', margin: 0, fontSize: '1.05rem' }}>{subj.desc}</p>
+
+              {/* Arrow */}
+              <div style={{ marginTop: '28px', color: 'white', fontWeight: '900', fontSize: '1.5rem' }}>→</div>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </div>
   );
-
 };
 
 export default HomePage;
