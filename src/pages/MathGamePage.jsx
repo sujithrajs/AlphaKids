@@ -19,10 +19,20 @@ const generateQuestion = (mode) => {
 
 const generateChoices = (answer) => {
   const choices = new Set([answer]);
+  let fallback = 1;
+  let attempts = 0;
   while (choices.size < 4) {
-    const offset = Math.floor(Math.random() * 5) - 2;
-    const v = Math.max(0, answer + offset);
-    choices.add(v);
+    if (attempts < 20) {
+      // Random offset in a wider range to avoid getting stuck on small answers
+      const offset = Math.floor(Math.random() * 9) - 4; // -4 to +4
+      const v = Math.max(0, answer + offset);
+      if (v !== answer) choices.add(v);
+    } else {
+      // Guaranteed fallback: add sequential distractors until we have 4
+      if (fallback !== answer) choices.add(fallback);
+      fallback++;
+    }
+    attempts++;
   }
   return [...choices].sort(() => Math.random() - 0.5);
 };
