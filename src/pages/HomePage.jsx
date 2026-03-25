@@ -26,6 +26,17 @@ const subjects = [
     badgeColor: '#34d399',
     badge: '+ & - Games',
   },
+  {
+    id: 'drawing',
+    route: '/draw',
+    emoji: '🎨',
+    title: 'Drawing',
+    desc: 'Trace shapes and figures with your finger!',
+    gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+    shadow: 'rgba(245,158,11,0.45)',
+    badgeColor: '#fbbf24',
+    badge: '8 Shapes',
+  },
 ];
 
 const HomePage = () => {
