@@ -13,27 +13,38 @@ export const useProgress = () => {
   useEffect(() => {
     const fetchProgress = async () => {
       if (!supabase) return;
-      
-      const { data, error } = await supabase
-        .from('user_progress')
-        .select('letter')
-        .eq('completed', true);
-        
-      if (!error && data) {
-        const remoteObj = {};
-        data.forEach(item => {
-          remoteObj[item.letter] = true;
-        });
-        
-        // Merge with local progress
-        setCompletedLetters(prev => {
-          const merged = { ...prev, ...remoteObj };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-          return merged;
-        });
+
+      try {
+        const timeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Supabase timeout')), 5000)
+        );
+
+        const query = supabase
+          .from('user_progress')
+          .select('letter')
+          .eq('completed', true);
+
+        const { data, error } = await Promise.race([query, timeout]);
+
+        if (!error && data) {
+          const remoteObj = {};
+          data.forEach(item => {
+            remoteObj[item.letter] = true;
+          });
+
+          // Merge with local progress
+          setCompletedLetters(prev => {
+            const merged = { ...prev, ...remoteObj };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            return merged;
+          });
+        }
+      } catch (err) {
+        // Silently fall back to localStorage if Supabase is unreachable
+        console.warn('Could not sync from Supabase:', err.message);
       }
     };
-    
+
     fetchProgress();
   }, []);
 
@@ -45,9 +56,13 @@ export const useProgress = () => {
 
       // Sync to Supabase
       if (supabase) {
-        await supabase
-          .from('user_progress')
-          .upsert({ letter, completed: true, updated_at: new Date() }, { onConflict: 'letter' });
+        try {
+          await supabase
+            .from('user_progress')
+            .upsert({ letter, completed: true, updated_at: new Date() }, { onConflict: 'letter' });
+        } catch (err) {
+          console.warn('Could not save progress to Supabase:', err.message);
+        }
       }
     }
   };
