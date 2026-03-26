@@ -40,6 +40,15 @@ const puzzles = [
     shadow: 'rgba(245,158,11,0.40)',
     badge: 'Colors',
   },
+  {
+    id: 'jigsaw',
+    emoji: '🧩',
+    title: 'Jigsaw Puzzle',
+    desc: 'Swap pieces to rebuild the picture!',
+    gradient: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)',
+    shadow: 'rgba(236,72,153,0.40)',
+    badge: '4 Scenes',
+  },
 ];
 
 const PuzzlePage = () => {

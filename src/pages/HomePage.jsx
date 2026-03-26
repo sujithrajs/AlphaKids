@@ -46,7 +46,7 @@ const subjects = [
     gradient: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)',
     shadow: 'rgba(236,72,153,0.45)',
     badgeColor: '#f472b6',
-    badge: '4 Puzzles',
+    badge: '5 Puzzles',
   },
 ];
 
