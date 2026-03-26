@@ -163,6 +163,8 @@ const DrawingPage = () => {
       <CelebrationModal
         isOpen={isCelebrationOpen}
         letter={meta.name}
+        nextLabel="Next Shape"
+        itemType="shape"
         onNext={handleNext}
         onRetry={handleRetry}
       />

@@ -37,6 +37,17 @@ const subjects = [
     badgeColor: '#fbbf24',
     badge: '8 Shapes',
   },
+  {
+    id: 'puzzles',
+    route: '/puzzles',
+    emoji: '🧩',
+    title: 'Puzzles',
+    desc: 'Match words, spot patterns, and sort by color!',
+    gradient: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)',
+    shadow: 'rgba(236,72,153,0.45)',
+    badgeColor: '#f472b6',
+    badge: '4 Puzzles',
+  },
 ];
 
 const HomePage = () => {

@@ -4,22 +4,51 @@
  */
 
 export const samplePath = (svgPathData, numPoints = 100) => {
-  // Create a temporary SVG path element
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.setAttribute("d", svgPathData);
-  
+
   const totalLength = path.getTotalLength();
   const points = [];
-  
+
   for (let i = 0; i < numPoints; i++) {
     const length = (i / (numPoints - 1)) * totalLength;
     const { x, y } = path.getPointAtLength(length);
-    points.push({ 
-      x: parseFloat(x.toFixed(2)), 
-      y: parseFloat(y.toFixed(2)) 
+    points.push({
+      x: parseFloat(x.toFixed(2)),
+      y: parseFloat(y.toFixed(2)),
     });
   }
-  
+
+  return points;
+};
+
+/**
+ * sampleScaledPath – samples a path originally drawn in a viewBox of
+ * `viewBoxSize × viewBoxSize` and maps it into a 0–100 percentage space
+ * with `padding` percent margin on each side.
+ *
+ * Usage: sampleScaledPath(lucidePath, 24, 60, 8)
+ *   → samples the Lucide path (24×24 grid) into ~84×84 space centred in 0–100.
+ */
+export const sampleScaledPath = (svgPathData, viewBoxSize = 24, numPoints = 60, padding = 8) => {
+  const scale = (100 - padding * 2) / viewBoxSize;
+  const offset = padding;
+
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", svgPathData);
+
+  const totalLength = path.getTotalLength();
+  const points = [];
+
+  for (let i = 0; i < numPoints; i++) {
+    const length = (i / (numPoints - 1)) * totalLength;
+    const { x, y } = path.getPointAtLength(length);
+    points.push({
+      x: parseFloat((x * scale + offset).toFixed(2)),
+      y: parseFloat((y * scale + offset).toFixed(2)),
+    });
+  }
+
   return points;
 };
 

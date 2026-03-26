@@ -7,6 +7,8 @@ import MathPage from './pages/MathPage';
 import MathGamePage from './pages/MathGamePage';
 import DrawingMenuPage from './pages/DrawingMenuPage';
 import DrawingPage from './pages/DrawingPage';
+import PuzzlePage from './pages/PuzzlePage';
+import PuzzleGamePage from './pages/PuzzleGamePage';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/math/:mode" element={<MathGamePage />} />
           <Route path="/draw" element={<DrawingMenuPage />} />
           <Route path="/draw/:shape" element={<DrawingPage />} />
+          <Route path="/puzzles" element={<PuzzlePage />} />
+          <Route path="/puzzles/:type" element={<PuzzleGamePage />} />
         </Routes>
       </div>
     </Router>

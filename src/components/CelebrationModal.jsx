@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Star, ArrowRight, RefreshCw } from 'lucide-react';
 
-const CelebrationModal = ({ isOpen, onNext, onRetry, letter }) => {
+const CelebrationModal = ({ isOpen, onNext, onRetry, letter, nextLabel = 'Next Letter', itemType = 'letter' }) => {
   // Celebration logic resides in TracingPage to sync with sound
 
   return (
@@ -113,7 +113,7 @@ const CelebrationModal = ({ isOpen, onNext, onRetry, letter }) => {
               marginBottom: '40px',
               fontWeight: '600'
             }}>
-              You traced the letter <strong>{letter}</strong> perfectly!
+              You traced the {itemType} <strong>{letter}</strong> perfectly!
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -136,7 +136,7 @@ const CelebrationModal = ({ isOpen, onNext, onRetry, letter }) => {
                   border: 'none'
                 }}
               >
-                Next Letter <ArrowRight size={24} />
+                {nextLabel} <ArrowRight size={24} />
               </motion.button>
 
               <motion.button
